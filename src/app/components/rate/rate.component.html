@@ -1,12 +1,26 @@
-<div class="card">
+<div class="card" *ngIf="!isLoading && !isError">
     <div class="card-body">
         <div>
         Rate for: {{ rate.amount }} <b>{{ rate.base }}</b> to <b>USD</b> Dating: <b> {{ rate.date }}</b> is:
         </div>
         <div>
-            {{ rate.rates['USD'] }}
+           <b>{{ rate.rates['USD'] }} </b> 
         </div>
          <hr>
          <button class="btn btn-primary" (click)="updateRate()">Update</button>
+    </div>
+</div>
+<div class="card" *ngIf="isLoading">
+    <div class="card-body">
+        <div class="alert alert-info">
+            Loading...
+        </div>
+    </div>
+</div>
+<div class="card" *ngIf="isError">
+    <div class="card-body">
+        <div class="alert alert-info">
+            Error...
+        </div>
     </div>
 </div>

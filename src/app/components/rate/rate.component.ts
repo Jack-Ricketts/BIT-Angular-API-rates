@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { DataResponse, Rates } from 'src/app/models/rate';
+import { RateService } from 'src/app/services/rate.service';
 
 @Component({
   selector: 'app-rate',
@@ -17,19 +18,27 @@ export class RateComponent implements OnInit {
       USD:12
     }
   }
+
+  public isLoading:boolean=true;
+  public isError:boolean=false;
   
-  constructor(private http:HttpClient) { }
+  constructor(private rateService:RateService) { }
       
   ngOnInit(): void {
     this.loadRate();
   }
 
   private loadRate(){
-    this.http.get<DataResponse>('https://api.frankfurter.app/latest?from=EUR&to=USD').subscribe(
-      (response)=>{
+    this.rateService.loadRate().subscribe({
+      next:(response)=>{
         this.rate=response;
+        this.isLoading=false;
+      },
+      error:(error)=>{
+        this.isLoading=false;
+        this.isError=true;
       }
-    )
+    });
   }
 
   updateRate(){
