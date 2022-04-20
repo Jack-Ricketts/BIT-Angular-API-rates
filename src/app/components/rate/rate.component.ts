@@ -1,50 +1,50 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { DataResponse, Rates } from 'src/app/models/rate';
-import { RateService } from 'src/app/services/rate.service';
+import {Component, OnInit} from "@angular/core";
+import {Currency} from "src/app/models/currency";
+import { DataResponse } from "src/app/models/rate";
+import { RateService } from "src/app/services/rate.service";
+
+
 
 @Component({
-  selector: 'app-rate',
-  templateUrl: './rate.component.html',
-  styleUrls: ['./rate.component.css']
+  selector: "app-rate",
+  templateUrl: "./rate.component.html",
+  styleUrls: ["./rate.component.css"],
 })
 export class RateComponent implements OnInit {
+  public from: string = "";
+  public to: string = "";
+  public noCurrency: boolean = true;
+  public rate: DataResponse = {
+    amount: 0,
+    base: "",
+    date: "",
+    rates: {
+      // USD: 12,
+    },
+  };
+  public currencyName: Currency[] = [];
 
-  public rate:DataResponse={
-    amount:5,
-    base:"EUR",
-    date:"2021.22.22",
-    rates:{
-      USD:12
-    }
-  }
+  constructor(private exhangeService: RateService) {}
 
-  public isLoading:boolean=true;
-  public isError:boolean=false;
-  
-  constructor(private rateService:RateService) { }
-      
   ngOnInit(): void {
-    this.loadRate();
-  }
-
-  private loadRate(){
-    this.rateService.loadRate().subscribe({
-      next:(response)=>{
-        this.rate=response;
-        this.isLoading=false;
-      },
-      error:(error)=>{
-        this.isLoading=false;
-        this.isError=true;
-      }
+    // this.loadExchange();
+    this.exhangeService.loadCurrencies().subscribe(() => {
+      this.currencyName = this.exhangeService.getCurrencyNames();
+      console.log(this.currencyName);
     });
   }
 
-  updateRate(){
-    this.loadRate();
+  private loadExchange() {
+    this.exhangeService.loadExchange(this.from, this.to).subscribe({
+      next: (responsive) => {
+        this.rate = responsive;
+        this.noCurrency = false;
+      },
+      error: (error) => {},
+    });
+  }
+
+  refreshRate() {
+    this.loadExchange();
   }
 }
-
-
-

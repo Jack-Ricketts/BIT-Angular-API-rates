@@ -1,26 +1,39 @@
-<div class="card" *ngIf="!isLoading && !isError">
-    <div class="card-body">
-        <div>
-        Rate for: {{ rate.amount }} <b>{{ rate.base }}</b> to <b>USD</b> Dating: <b> {{ rate.date }}</b> is:
+<div class="row">
+    <div class="col-md-6 mt-5">
+      <div class="card">
+        <div class="card-body">
+          <label for="" class="form-label mb-1">Choose currency FROM</label>
+          <select class="form-select mb-1" [(ngModel)]="from">
+            <option [value]="currency.code" *ngFor="let currency of currencyName">
+              {{ currency.name }}
+            </option>
+          </select>
+  
+          <label for="" class="form-label mb-1">Choose currency TO</label>
+          <select class="form-select mb-1" [(ngModel)]="to">
+            <option [value]="currency.code" *ngFor="let currency of currencyName">
+              {{ currency.name }}
+            </option>
+          </select>
+          <button
+            class="btn btn-primary mt-2"
+            (click)="refreshRate()"
+            [disabled]="from == '' && to == ''"
+          >
+            Refresh rate
+          </button>
         </div>
-        <div>
-           <b>{{ rate.rates['USD'] }} </b> 
-        </div>
-         <hr>
-         <button class="btn btn-primary" (click)="updateRate()">Update</button>
+      </div>
     </div>
-</div>
-<div class="card" *ngIf="isLoading">
-    <div class="card-body">
-        <div class="alert alert-info">
-            Loading...
+  
+    <div class="col-md-6 mt-5">
+      <div class="card" *ngIf="!noCurrency">
+        <div class="card-body">
+          Currency rate: {{ rate.rates[to] }}
+          <hr />
+          <div>Rate date: {{ rate.date }}</div>
+          <hr />
         </div>
+      </div>
     </div>
-</div>
-<div class="card" *ngIf="isError">
-    <div class="card-body">
-        <div class="alert alert-info">
-            Error...
-        </div>
-    </div>
-</div>
+  </div>
